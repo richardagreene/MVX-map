@@ -24,6 +24,10 @@ namespace MVXmap.DB
 	{
 		private SQLiteAsyncConnection db;
 
+		public Repository()
+		{
+			this.db = DBConnection.Connection;
+		}
 		public Repository(SQLiteAsyncConnection db)
 		{
 			this.db = db;
