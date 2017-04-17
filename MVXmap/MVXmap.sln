@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVXmapForms.Droid", "Droid\
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MVXmap.Core", "MVXmap.Core\MVXmap.Core.shproj", "{5AAC7A7C-3FCE-4B44-994E-04C97707EB11}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVXmap.UnitTests", "MVXmap.UnitTests\MVXmap.UnitTests.csproj", "{4FEDDC79-A81C-4080-A8C0-C7683974ECDB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|iPhoneSimulator = Debug|iPhoneSimulator
@@ -41,5 +43,13 @@ Global
 		{A3CBF1C9-8697-4A07-8695-2CF5F9BF2DD3}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{A3CBF1C9-8697-4A07-8695-2CF5F9BF2DD3}.Debug|iPhone.ActiveCfg = Debug|Any CPU
 		{A3CBF1C9-8697-4A07-8695-2CF5F9BF2DD3}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{4FEDDC79-A81C-4080-A8C0-C7683974ECDB}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{4FEDDC79-A81C-4080-A8C0-C7683974ECDB}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{4FEDDC79-A81C-4080-A8C0-C7683974ECDB}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{4FEDDC79-A81C-4080-A8C0-C7683974ECDB}.Release|iPhone.Build.0 = Release|Any CPU
+		{4FEDDC79-A81C-4080-A8C0-C7683974ECDB}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{4FEDDC79-A81C-4080-A8C0-C7683974ECDB}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{4FEDDC79-A81C-4080-A8C0-C7683974ECDB}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{4FEDDC79-A81C-4080-A8C0-C7683974ECDB}.Debug|iPhone.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal
