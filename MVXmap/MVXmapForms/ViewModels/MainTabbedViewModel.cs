@@ -7,6 +7,7 @@ using MvvmCross.Core.ViewModels;
 using MvvmCross.Platform;
 using MVXmap.Core;
 using MVXmap.Core.Messages;
+using MVXMap.Core.Messages;
 using MVXMap.Core.Model;
 using MVXmapForms.Pages;
 using MVXmapForms.Services;
@@ -33,9 +34,9 @@ namespace MVXmapForms.ViewModels
 			page1.Title = "Main";
 			Pages.Add(page1);
 
-			var page2 = new AboutPage();
-			page2.BindingContext = new AboutViewModel();
-			page2.Title = "About";
+			var page2 = new NetworkPage();
+			page2.BindingContext = new NetworkViewModel(Mvx.Resolve<INetworkAPIService>());
+			page2.Title = "Network";
 			Pages.Add(page2);
 
 			MessagingCenter.Send<InitDatabaseMessage>(new InitDatabaseMessage(), AppMessage.InitDatabase.ToString());
@@ -54,13 +55,29 @@ namespace MVXmapForms.ViewModels
 		}
 
 
+		//  -------- Commands  -----------
+
+		public ICommand LogoutCommand
+		{
+			get	{ return new MvxCommand(() => { 
+					MessagingCenter.Send<AlertMessage>(new AlertMessage() { MessageText = "Message From Beyond!" }, AppMessage.Alert.ToString());	});
+			}
+		}
+
+		public ICommand AboutCommand
+		{
+			get { return new MvxCommand(() => ShowViewModel<AboutViewModel>()); }
+		}
+
+		/// <summary>
+		/// Subscribes to messages.
+		/// </summary>
 		private void SubscribeToMessages()
 		{
 			MessagingCenter.Subscribe<InitDatabaseMessage>(this, AppMessage.InitDatabase.ToString(), async (result) =>
 			{
-			var x = await _repo.Get();
-
-			_log.Debug("results of message=>{0}", x.Count.ToString()); 
+				var x = await _repo.Get();
+				_log.Debug("results of message=>{0}", x.Count.ToString()); 
 			});
 		}
 	}

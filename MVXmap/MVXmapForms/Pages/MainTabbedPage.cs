@@ -21,10 +21,14 @@ namespace MVXmapForms.Pages
 			// Set a button
 			ToolbarItem tbi = new ToolbarItem();
 			tbi.Text = "Logout";
-			tbi.Clicked += (sender, e) => {
-				MessagingCenter.Send<AlertMessage>(new AlertMessage() { MessageText = "MessageFromBeyond!" }, "X");		
-			};
+			tbi.SetBinding(ToolbarItem.CommandProperty, new Binding("LogoutCommand"));
 			this.ToolbarItems.Add(tbi);
+			ToolbarItem tbiAbout = new ToolbarItem();
+			tbiAbout.Text = "About";
+			tbiAbout.SetBinding(ToolbarItem.CommandProperty, new Binding("AboutCommand"));
+			this.ToolbarItems.Add(tbiAbout);
+
+
 		}
 
 		/// <summary>
