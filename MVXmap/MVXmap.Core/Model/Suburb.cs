@@ -1,7 +1,7 @@
 ﻿using System;
 using SQLite.Net.Attributes;
 
-namespace MVXmap.DB
+namespace MVXMap.Core.Model
 {
 	public class Suburb
 	{

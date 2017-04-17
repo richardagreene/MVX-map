@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using MVXmapForms;
-using MVXMap.Core.Messaging;
 using MVXmapForms.ViewModels;
 using Xamarin.Forms;
+using MVXmap.Core;
+using MVXmap.Core.Messages;
+using MVXMap.Core.Messages;
 
 namespace MVXmapForms.Pages
 {
@@ -30,12 +32,17 @@ namespace MVXmapForms.Pages
 		/// </summary>
 		private void SubscribeToMessages()
 		{
-			MessagingCenter.Subscribe<AlertMessage>(this, "X", (navigationMessage) =>
+			MessagingCenter.Subscribe<AlertMessage>(this, AppMessage.Alert.ToString(), (navigationMessage) =>
 			{
 				// Perform the actual navigation here
 				if (navigationMessage.MessageText != null)
 					DisplayAlert("Message", navigationMessage.MessageText, "OK");
 			});
+
+			MessagingCenter.Subscribe<ReloadMessage>(this, AppMessage.Reload.ToString(), (navigationMessage) =>
+			{
+			});
+
 		}
 
 		/// <summary>

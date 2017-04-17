@@ -5,10 +5,11 @@ using System.Linq;
 using SQLite.Net.Async;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
+using NGIS.Forms;
 
-namespace MVXmap.DB
+namespace MVXmapForms.Services
 {
-	public interface IRepository<T> where T : class, new()
+	public interface IRepositoryService<T> where T : class, new()
 	{
 		Task<List<T>> Get();
 		Task<T> Get(int id);
@@ -20,28 +21,30 @@ namespace MVXmap.DB
 		Task<int> Delete(T entity);
 	}
 
-	public class Repository<T> : IRepository<T> where T : class, new()
+	public class RepositoryService<T> : IRepositoryService<T> where T : class, new()
 	{
-		private SQLiteAsyncConnection db;
+		private SQLiteAsyncConnection _db;
 
-		public Repository()
+		public RepositoryService()
 		{
-			this.db = DBConnection.Connection;
+			var param = new SQLiteConnectionString(GlobalConfiguration.Instance.PathToDB, false);
+			_db = new SQLiteAsyncConnection(() => new SQLiteConnectionWithLock(GlobalConfiguration.Instance.Platform, param));
 		}
-		public Repository(SQLiteAsyncConnection db)
+		// alternative connection
+		public RepositoryService(SQLiteAsyncConnection db)
 		{
-			this.db = db;
+			this._db = db;
 		}
 
 		public AsyncTableQuery<T> AsQueryable() =>
-			db.Table<T>();
+			_db.Table<T>();
 
 		public async Task<List<T>> Get() =>
-			await db.Table<T>().ToListAsync();
+			await _db.Table<T>().ToListAsync();
 
 		public async Task<List<T>> Get<TValue>(Expression<Func<T, bool>> predicate = null, Expression<Func<T, TValue>> orderBy = null)
 		{
-			var query = db.Table<T>();
+			var query = _db.Table<T>();
 
 			if (predicate != null)
 				query = query.Where(predicate);
@@ -53,18 +56,18 @@ namespace MVXmap.DB
 		}
 
 		public async Task<T> Get(int id) =>
-			 await db.FindAsync<T>(id);
+			 await _db.FindAsync<T>(id);
 
 		public async Task<T> Get(Expression<Func<T, bool>> predicate) =>
-			await db.FindAsync<T>(predicate);
+			await _db.FindAsync<T>(predicate);
 
 		public async Task<int> Insert(T entity) =>
-			 await db.InsertAsync(entity);
+			 await _db.InsertAsync(entity);
 
 		public async Task<int> Update(T entity) =>
-			 await db.UpdateAsync(entity);
+			 await _db.UpdateAsync(entity);
 
 		public async Task<int> Delete(T entity) =>
-			 await db.DeleteAsync(entity);
+			 await _db.DeleteAsync(entity);
 	}
 }

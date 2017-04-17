@@ -1,27 +1,31 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using MVXmap.Core.Messages;
+using MVXMap.Core.Model;
+using MVXmapForms.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.GoogleMaps;
 
 namespace MVXmapForms.Pages
 {
-	public class MappingPage: ContentPage
+	public class MappingPage : ContentPage
 	{
+		Map _map = new Map();
 		public MappingPage()
 		{
-
-			var map = new Map();
-			map.MapType = MapType.Street;
-			map.VerticalOptions = LayoutOptions.FillAndExpand;
-
+			SubscribeToMessages();
+			_map.MapType = MapType.Street;
+			_map.VerticalOptions = LayoutOptions.FillAndExpand;
 
 			var grid = new Grid();
 			grid.HorizontalOptions = LayoutOptions.Fill;
 			grid.VerticalOptions = LayoutOptions.Fill;
-			grid.Children.Add(map);
+			grid.Children.Add(_map);
 			Content = grid;
 
 			// Map Clicked
-			map.MapClicked += (sender, e) =>
+			_map.MapClicked += (sender, e) =>
 			{
 				var lat = e.Point.Latitude.ToString("0.000");
 				var lng = e.Point.Longitude.ToString("0.000");
@@ -29,7 +33,7 @@ namespace MVXmapForms.Pages
 			};
 
 			// Map Long clicked
-			map.MapLongClicked += (sender, e) =>
+			_map.MapLongClicked += (sender, e) =>
 			{
 				var lat = e.Point.Latitude.ToString("0.000");
 				var lng = e.Point.Longitude.ToString("0.000");
@@ -38,27 +42,39 @@ namespace MVXmapForms.Pages
 			};
 
 			Position position = new Position(37.79762, -122.40181);
-			map.MoveToRegion(new MapSpan(position,  10, 10));
-			map.HasZoomEnabled = true;
-			// set pins
-			SetPins();
+			_map.MoveToRegion(new MapSpan(position, 10, 10));
+			_map.HasZoomEnabled = true;
 		}
 
-		public async void SetPins()
+		protected override void OnBindingContextChanged()
 		{
-//			var connection = GlobalConfiguration.Instance.Connection;
-//			IRepository<Suburb> stockRepo = new Repository<Suburb>(connection);
-//			var results = await stockRepo.Get();
-//			foreach (var result in results)
-//			{
-//				if (result.LAT == 0) continue; // no value
-//				Position position = new Position(result.LAT, result.Long);
-//				map.Pins.Add(new Pin
-//				{
-//					Label = result.Name,
-//					Position = position
-//				});
-//			}
+			base.OnBindingContextChanged();
+		}
+
+		public void SetPins(Map map, IList<Suburb> suburbs)
+		{
+			foreach (var suburb in suburbs)
+			{
+				if (suburb.LAT == 0) continue; // no value
+				Position position = new Position(suburb.LAT, suburb.Long);
+				_map.Pins.Add(new Pin
+				{
+					Label = suburb.Name,
+					Position = position
+				});
+			}
+		}
+		/// <summary>
+		/// Subscribes to messages.
+		/// </summary>
+		private void SubscribeToMessages()
+		{
+			MessagingCenter.Subscribe<ReloadMessage>(this, AppMessage.Reload.ToString(), (navigationMessage) =>
+			{
+				MappingViewModel vm = BindingContext as MappingViewModel;
+				if (vm != null)
+					SetPins(_map, vm.Suburbs);
+			});
 		}
 	}
 }

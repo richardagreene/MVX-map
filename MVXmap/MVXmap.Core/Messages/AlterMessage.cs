@@ -1,5 +1,5 @@
 ﻿using System;
-namespace MVXMap.Core.Messaging
+namespace MVXMap.Core.Messages
 {
 	public class AlertMessage
 	{

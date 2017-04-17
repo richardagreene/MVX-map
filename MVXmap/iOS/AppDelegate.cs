@@ -9,7 +9,7 @@ using MvvmCross.Platform;
 using UIKit;
 using NGIS.Forms;
 using SQLite.Net.Platform.XamarinIOS;
-using MVXmap.DB;
+using MVXmapForms.Services;
 
 namespace MVXmapForms.iOS
 {
@@ -20,17 +20,22 @@ namespace MVXmapForms.iOS
 		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
 		{
 			_window = new UIWindow(UIScreen.MainScreen.Bounds);
+
+			// Setup of the application at startup
 			//global::Xamarin.Forms.Forms.Init();
 			Xamarin.FormsGoogleMaps.Init(GlobalConfiguration.Instance.MapsApiKey);
 			Google.Maps.MapServices.ProvideAPIKey(GlobalConfiguration.Instance.MapsApiKey);
+			GlobalConfiguration.Instance.PathToDB = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "MVXmap.db");
+			GlobalConfiguration.Instance.Platform = new SQLitePlatformIOS();
 
-			DBConnection.PathToDB = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "MVXmap.db");
-			DBConnection.Platform = new SQLitePlatformIOS();
 			var setup = new Setup(this, _window);
 			setup.Initialize();
 
 			var startup = Mvx.Resolve<IMvxAppStart>();
 			startup.Start();
+
+			IDataService database = Mvx.Resolve<IDataService>();
+			database.InitAsync();
 
 			_window.MakeKeyAndVisible();
 
