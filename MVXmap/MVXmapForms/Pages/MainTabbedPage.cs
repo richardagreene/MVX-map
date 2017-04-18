@@ -19,16 +19,18 @@ namespace MVXmapForms.Pages
 			SubscribeToMessages();
 
 			// Set a button
-			ToolbarItem tbi = new ToolbarItem();
-			tbi.Text = "Logout";
-			tbi.SetBinding(ToolbarItem.CommandProperty, new Binding("LogoutCommand"));
-			this.ToolbarItems.Add(tbi);
+			ToolbarItem tbiPopulate = new ToolbarItem();
+			tbiPopulate.Text = "Populate";
+			tbiPopulate.SetBinding(ToolbarItem.CommandProperty, new Binding("PopulateCommand"));
+            this.ToolbarItems.Add(tbiPopulate);
+			ToolbarItem tbiLogout = new ToolbarItem();
+			tbiLogout.Text = "Logout";
+			tbiLogout.SetBinding(ToolbarItem.CommandProperty, new Binding("LogoutCommand"));
+			this.ToolbarItems.Add(tbiLogout);
 			ToolbarItem tbiAbout = new ToolbarItem();
 			tbiAbout.Text = "About";
 			tbiAbout.SetBinding(ToolbarItem.CommandProperty, new Binding("AboutCommand"));
 			this.ToolbarItems.Add(tbiAbout);
-
-
 		}
 
 		/// <summary>

@@ -16,15 +16,14 @@ namespace MVXmapForms.ViewModels
 		public MappingViewModel(ISuburbService repo)
 		{
 			_repo = repo;
-			// Load any data required for the View Model
-			Task.Run(async () => { await LoadDataAsync(); });
+			SubscribeToMessages();
 		}
 
 		private List<Suburb> _suburbs = new List<Suburb>();
 		public List<Suburb> Suburbs
 		{
 			get { return _suburbs; }
-			set { _suburbs = value; }
+			set { SetProperty(ref _suburbs, value); }
 		 } 
 
 		/// <summary>
@@ -36,7 +35,21 @@ namespace MVXmapForms.ViewModels
 			Suburbs = await _repo.Get();
 			_log.Debug("Map Got data {0} records", _suburbs.Count);
  			RaisePropertyChanged(() => Suburbs);
-			MessagingCenter.Send<ReloadMessage>(new ReloadMessage(), AppMessage.Reload.ToString());
+			MessagingCenter.Send<ShowPinsMessage>(new ShowPinsMessage(), AppMessage.ShowPins.ToString());
+		}
+
+
+		//  -------- Messages  -----------
+
+		/// <summary>
+		/// Subscribes to messages.
+		/// </summary>
+		private void SubscribeToMessages()
+		{
+			MessagingCenter.Subscribe<ReloadMessage>(this, AppMessage.Reload.ToString(), async (result) =>
+			{
+				await LoadDataAsync();
+			});
 		}
 	}
 }

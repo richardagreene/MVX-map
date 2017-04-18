@@ -3,8 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using MvvmCross.Core.ViewModels;
+using MVXmap.Core.Messages;
 using MVXMap.Core.Model;
 using MVXmapForms.Services;
+using Xamarin.Forms;
 
 namespace MVXmapForms.ViewModels
 {
@@ -16,27 +18,22 @@ namespace MVXmapForms.ViewModels
 		{
 			_repo = repo;
 			// Load any data required for the View Model
-			LoadDataAsync();
+			SubscribeToMessages();
 		}
 
 		private IList<Suburb> _suburbs = new List<Suburb>();
-		public IList<Suburb> Suburbs { get { return _suburbs; } set { _suburbs = value; } }
+		public IList<Suburb> Suburbs { get { return _suburbs; } set { SetProperty(ref _suburbs, value); } }
 
-		private string _yourNickname = string.Empty;
-		public string YourNickname
+		private string _search = string.Empty;
+		public string Search
 		{
-			get { return _yourNickname; }
-			set
-			{
-				if (SetProperty(ref _yourNickname, value))
-					RaisePropertyChanged(() => Hello);
-			}
+			get { return _search; }
+			set { SetProperty(ref _search, value); }
 		}
 
-		// set the message 
-		public string Hello
+		public ICommand FilterListCommand
 		{
-			get { return "Hello " + YourNickname; }
+			get { return new MvxCommand(async () => await LoadDataAsync()); }
 		}
 
 		public ICommand ShowAboutPageCommand
@@ -49,9 +46,27 @@ namespace MVXmapForms.ViewModels
 		/// </summary>
 		/// <returns>The data async.</returns>
 		async Task LoadDataAsync()
-		{ 
-			_suburbs = await _repo.Get();
-			RaisePropertyChanged(() => Suburbs);
+		{
+			if (string.IsNullOrEmpty(Search))
+				Suburbs = await _repo.Get();
+			else
+			{
+				var result = await _repo.Get();
+				Suburbs = result.Where(x => x.Name.ToLower().Contains(Search.ToLower())).ToList();
+			}
+		}
+
+		//  -------- Messages  -----------
+
+		/// <summary>
+		/// Subscribes to messages.
+		/// </summary>
+		private void SubscribeToMessages()
+		{
+			MessagingCenter.Subscribe<ReloadMessage>(this, AppMessage.Reload.ToString(), async (result) =>
+			{
+				await LoadDataAsync();
+			});
 		}
 	}
 }

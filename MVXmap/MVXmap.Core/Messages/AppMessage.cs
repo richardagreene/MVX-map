@@ -7,6 +7,7 @@ namespace MVXmap.Core.Messages
 	{ 	
 		InitDatabase, 
 		Alert,
-		Reload
+		Reload,
+		ShowPins
 	}
 }

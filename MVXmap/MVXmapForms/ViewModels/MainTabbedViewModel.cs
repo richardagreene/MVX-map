@@ -21,7 +21,6 @@ namespace MVXmapForms.ViewModels
 
 		public MainTabbedViewModel(ISuburbService repo)
 		{
-			SubscribeToMessages();
 			_repo = repo;
 
 			var map = new MappingPage();
@@ -39,7 +38,8 @@ namespace MVXmapForms.ViewModels
 			page2.Title = "Network";
 			Pages.Add(page2);
 
-			MessagingCenter.Send<InitDatabaseMessage>(new InitDatabaseMessage(), AppMessage.InitDatabase.ToString());
+			// tell all child pages to load
+			MessagingCenter.Send<ReloadMessage>(new ReloadMessage(), AppMessage.Reload.ToString());
 
 		}
 
@@ -69,16 +69,25 @@ namespace MVXmapForms.ViewModels
 			get { return new MvxCommand(() => ShowViewModel<AboutViewModel>()); }
 		}
 
-		/// <summary>
-		/// Subscribes to messages.
-		/// </summary>
-		private void SubscribeToMessages()
+		public ICommand PopulateCommand
 		{
-			MessagingCenter.Subscribe<InitDatabaseMessage>(this, AppMessage.InitDatabase.ToString(), async (result) =>
+			get
 			{
-				var x = await _repo.Get();
-				_log.Debug("results of message=>{0}", x.Count.ToString()); 
-			});
+				return new MvxCommand(async () =>
+				{
+					// Get current list and add one
+					var _current = await _repo.Get();
+					Random rnd = new Random();
+					var s = new Suburb()
+					{
+						Name = String.Format("test{0}", _current.Count),
+						Long = -122.40181 + rnd.NextDouble(),
+						LAT = 37.79762 + rnd.NextDouble()
+					};
+					await _repo.Insert(s);
+					MessagingCenter.Send<ReloadMessage>(new ReloadMessage(), AppMessage.Reload.ToString());
+				});
+			}
 		}
 	}
 }

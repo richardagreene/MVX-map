@@ -12,6 +12,7 @@ namespace MVXmapForms.Pages
 	public class MappingPage : ContentPage
 	{
 		Map _map = new Map();
+
 		public MappingPage()
 		{
 			SubscribeToMessages();
@@ -69,7 +70,7 @@ namespace MVXmapForms.Pages
 		/// </summary>
 		private void SubscribeToMessages()
 		{
-			MessagingCenter.Subscribe<ReloadMessage>(this, AppMessage.Reload.ToString(), (navigationMessage) =>
+			MessagingCenter.Subscribe<ShowPinsMessage>(this, AppMessage.ShowPins.ToString(), (navigationMessage) =>
 			{
 				MappingViewModel vm = BindingContext as MappingViewModel;
 				if (vm != null)
