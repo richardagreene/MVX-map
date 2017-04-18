@@ -14,7 +14,7 @@ namespace MVXmapForms.Services
 	/// <summary>
 	/// Needed as the services can't refect on generic parameters
 	/// </summary>
-	public class SuburbService : ISuburbService
+	public class SuburbService : BaseClass, ISuburbService
 	{
 		private readonly IRepositoryService<Suburb> _repo = null;
 		public SuburbService()
@@ -23,12 +23,28 @@ namespace MVXmapForms.Services
 		}
 
 		public async Task<List<Suburb>> Get()
-		{ 
-			return await _repo.Get();
+		{
+			try
+			{
+				return await _repo.Get();
+			}
+			catch (Exception ex)
+			{
+				_log.Error("SQL Error: {0}", ex.Message);
+				return new List<Suburb>();
+			}
 		}
 		public async Task<int> Insert(Suburb suburb)
 		{
-			return await _repo.Insert(suburb);
+			try
+			{
+				return await _repo.Insert(suburb);
+			}
+			catch (Exception ex)
+			{
+				_log.Error("SQL Error: {0}", ex.Message);
+				return 0;
+			}
 		}
 	}
 }
